@@ -1,0 +1,11 @@
+{
+  "domain": "media_streams",
+  "name": "Media Streams",
+  "documentation": "https://github.com/yourusername/media_streams",
+  "dependencies": [],
+  "config_flow": false,
+  "codeowners": ["@yourusername"],
+  "requirements": [],
+  "version": "0.1.0",
+  "iot_class": "local_polling"
+}
