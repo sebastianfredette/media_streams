@@ -1,7 +1,8 @@
 {
   "domain": "media_streams",
   "name": "Media Streams",
-  "documentation": "https://github.com/yourusername/media_streams",
+  "documentation": "https://github.com/sebastianfredette/media_streams",
+  "issue_tracker": "https://github.com/sebastianfredette/media_streams/issues",
   "dependencies": [],
   "config_flow": false,
   "codeowners": ["@yourusername"],
