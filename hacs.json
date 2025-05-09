@@ -1,0 +1,10 @@
+{
+  "name": "Media Streams",
+  "render_readme": true,
+  "domain": "media_streams",
+  "documentation": "https://github.com/sebastianfredette/media_streams",
+  "issue_tracker": "https://github.com/sebastianfredette/media_streams/issues",
+  "dependencies": [],
+  "iot_class": "local_polling",
+  "homeassistant": "2023.8.0"
+}
