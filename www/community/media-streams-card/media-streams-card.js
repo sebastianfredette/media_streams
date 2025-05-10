@@ -68,6 +68,13 @@ class MediaStreamsCard extends HTMLElement {
         .user-icon {
           margin-right: 4px;
         }
+        .stream-type {
+          display: flex;
+          align-items: center;
+        }
+        .media-icon {
+          margin-right: 4px;
+        }
         .no-streams {
           color: var(--secondary-text-color);
           font-style: italic;
@@ -132,9 +139,34 @@ class MediaStreamsCard extends HTMLElement {
           const streamDetails = document.createElement('div');
           streamDetails.className = 'stream-details';
           
-          // Type and method
+          // Type and method with icons
           const streamType = document.createElement('div');
-          streamType.textContent = `${stream.type} • ${stream.method}`;
+          streamType.className = 'stream-type';
+          
+          const mediaIcon = document.createElement('ha-icon');
+          mediaIcon.className = 'media-icon';
+          
+          // Set icon based on media type
+          if (stream.type.toLowerCase().includes('music')) {
+            mediaIcon.icon = 'mdi:music';
+          } else if (stream.type.toLowerCase().includes('video')) {
+            mediaIcon.icon = 'mdi:video';
+          } else if (stream.type.toLowerCase().includes('movie')) {
+            mediaIcon.icon = 'mdi:movie';
+          } else if (stream.type.toLowerCase().includes('episode')) {
+            mediaIcon.icon = 'mdi:television-classic';
+          } else {
+            mediaIcon.icon = 'mdi:play-circle';
+          }
+          
+          mediaIcon.style.width = '12px';
+          mediaIcon.style.height = '12px';
+          
+          const typeText = document.createElement('span');
+          typeText.textContent = `${stream.type} • ${stream.method}`;
+          
+          streamType.appendChild(mediaIcon);
+          streamType.appendChild(typeText);
           
           // User info
           const streamUser = document.createElement('div');
