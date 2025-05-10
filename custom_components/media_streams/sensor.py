@@ -212,37 +212,23 @@ class PlexStreamsSensor(SensorEntity):
             )
             response.raise_for_status()
             
-            # Parse XML response - simplified for this example
-            # In a real implementation, use proper XML parsing
-            # For now we're just counting the MediaContainer size attribute
+            # Parse XML response using ET
             import xml.etree.ElementTree as ET
             root = ET.fromstring(response.text)
             
             # Get the 'size' attribute which represents the number of active sessions
             self._state = int(root.get('size', 0))
             
-            # Parse stream details
+            # Parse stream details for both video and music
             stream_details = []
+            
+            # Process Video streams
             for video in root.findall('.//Video'):
-                user_tag = video.find('.//User')
-                user = user_tag.get('title', 'Unknown') if user_tag is not None else 'Unknown'
-                
-                title = video.get('title', 'Unknown')
-                media_type = video.get('type', 'Unknown')
-                
-                # Get transcoding info
-                transcoding = "DirectPlay"
-                for stream in video.findall('.//Stream'):
-                    if stream.get('decision') == 'transcode':
-                        transcoding = "Transcode"
-                        break
-                
-                stream_details.append({
-                    "user": user,
-                    "title": title,
-                    "type": media_type,
-                    "method": transcoding
-                })
+                self._process_media_item(video, "Video", stream_details)
+            
+            # Process Track (music) streams
+            for track in root.findall('.//Track'):
+                self._process_media_item(track, "Music", stream_details)
             
             self._attributes["streams"] = stream_details
             self._attributes["last_updated"] = response.headers.get("Date")
@@ -250,3 +236,42 @@ class PlexStreamsSensor(SensorEntity):
         except requests.RequestException as err:
             _LOGGER.error("Error fetching Plex stream data: %s", err)
             self._state = None
+        except Exception as err:
+            _LOGGER.error("Error processing Plex stream data: %s", err)
+            self._state = None
+    
+    def _process_media_item(self, media_item, default_type, stream_details):
+        """Process a media item (Video or Track) and add it to stream details."""
+        user_tag = media_item.find('.//User')
+        user = user_tag.get('title', 'Unknown') if user_tag is not None else 'Unknown'
+        
+        title = media_item.get('title', 'Unknown')
+        
+        # For music, include artist information if available
+        if default_type == "Music":
+            grandparent_title = media_item.get('grandparentTitle', '')
+            if grandparent_title:
+                title = f"{grandparent_title} - {title}"
+                
+            # Also include album if available
+            parent_title = media_item.get('parentTitle', '')
+            if parent_title:
+                media_type = f"Music (Album: {parent_title})"
+            else:
+                media_type = "Music"
+        else:
+            media_type = media_item.get('type', default_type)
+        
+        # Get transcoding info
+        transcoding = "DirectPlay"
+        for stream in media_item.findall('.//Stream'):
+            if stream.get('decision') == 'transcode':
+                transcoding = "Transcode"
+                break
+        
+        stream_details.append({
+            "user": user,
+            "title": title,
+            "type": media_type,
+            "method": transcoding
+        })
