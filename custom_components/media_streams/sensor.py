@@ -260,7 +260,11 @@ class PlexStreamsSensor(SensorEntity):
             else:
                 media_type = "Music"
         else:
+            # Get the type and capitalize it consistently
             media_type = media_item.get('type', default_type)
+            # Ensure consistent capitalization (Movie, Episode, etc.)
+            if media_type:
+                media_type = media_type.capitalize()
         
         # Get transcoding info
         transcoding = "DirectPlay"
