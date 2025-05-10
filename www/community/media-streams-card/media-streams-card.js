@@ -146,18 +146,8 @@ class MediaStreamsCard extends HTMLElement {
           const mediaIcon = document.createElement('ha-icon');
           mediaIcon.className = 'media-icon';
           
-          // Set icon based on media type
-          if (stream.type.toLowerCase().includes('music')) {
-            mediaIcon.icon = 'mdi:music';
-          } else if (stream.type.toLowerCase().includes('video')) {
-            mediaIcon.icon = 'mdi:video';
-          } else if (stream.type.toLowerCase().includes('movie')) {
-            mediaIcon.icon = 'mdi:movie';
-          } else if (stream.type.toLowerCase().includes('episode')) {
-            mediaIcon.icon = 'mdi:television-classic';
-          } else {
-            mediaIcon.icon = 'mdi:play-circle';
-          }
+          // Don't use specific media icons since they're not loading
+          mediaIcon.icon = 'mdi:play-circle';
           
           mediaIcon.style.width = '12px';
           mediaIcon.style.height = '12px';
